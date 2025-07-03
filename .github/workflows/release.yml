@@ -22,7 +22,7 @@ jobs:
 
       - name: Download SMAPI
         run: |
-          Invoke-WebRequest -Uri "https://github.com/Pathoschild/SMAPI/releases/download/3.25.2/SMAPI-3.25.2-installer.zip" -OutFile "smapi.zip"
+          Invoke-WebRequest -Uri "https://github.com/Pathoschild/SMAPI/releases/download/4.2.1/SMAPI-4.2.1-installer-for-developers.zip" -OutFile "smapi.zip"
           Expand-Archive smapi.zip -DestinationPath smapi
           New-Item -ItemType Directory -Path smapi-libs -Force
           Copy-Item -Path "smapi/lib/SMAPI.dll" -Destination "smapi-libs/StardewModdingAPI.dll" -Force
