@@ -1,7 +1,7 @@
 <Project>
   <ItemGroup>
-    <Reference Include="StardewModdingAPI">
-      <HintPath>smapi-libs/StardewModdingAPI.dll</HintPath>
+    <Reference Include="SMAPI">
+      <HintPath>smapi-libs/SMAPI.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="Stardew Valley">
