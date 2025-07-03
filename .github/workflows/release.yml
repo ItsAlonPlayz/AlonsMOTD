@@ -8,64 +8,48 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-
     steps:
-      # 1) Checkout your code
+      # 1) Checkout repo
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2) Setup .NET SDK
+      # 2) Setup .NET 7
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '7.0.x'
 
-      # 3) Restore NuGet packages
-      - name: Restore dependencies
-        run: dotnet restore
-
-      # 4) Install SteamCMD
-      - name: Install SteamCMD
-        uses: Lordfirespeed/setup-steamcmd@v2
-
-      # 5) Install Stardew Valley via SteamCMD
-      - name: Install Stardew Valley via SteamCMD
-        shell: pwsh
-        run: steamcmd +force_install_dir "${{ runner.temp }}\Stardew" +login anonymous +app_update 413150 validate +quit
-
-      # 6) Download and unpack the SMAPI installer
-      - name: Download SMAPI installer
-        shell: pwsh
-        run: |
-          Invoke-WebRequest -Uri "https://github.com/Pathoschild/SMAPI/releases/download/4.2.1/SMAPI-4.2.1-installer.zip" -OutFile "smapi.zip"
-          Expand-Archive smapi.zip -DestinationPath smapi
-
-      # 7) Install SMAPI into the same game folder
-      - name: Install SMAPI into game folder
-        shell: pwsh
-        run: |
-          & .\smapi\SMAPI-4.2.1-installer.exe /S /D="${{ runner.temp }}\Stardew"
-
-      # 8) Build your mod, pointing at the installed game
-      - name: Build & zip
-        shell: pwsh
+      # 3) Restore and build
+      - name: Restore & build
         run: |
           dotnet clean
-          dotnet build --configuration Release -p:GamePath="${{ runner.temp }}\Stardew"
-
-      # 9) Package your DLL, manifest & docs into a zip
-      - name: Package mod ZIP
+          dotnet restore
+          dotnet build --configuration Release
         shell: pwsh
+
+      # 4) Package mod DLL, manifest, config, docs into a zip
+      - name: Package mod ZIP
         run: |
           $modName = 'AlonsMOTD'
-          $outDir  = "$env:GITHUB_WORKSPACE\bin\Release\net7.0"
+          $binDir  = "$env:GITHUB_WORKSPACE\bin\Release\net7.0"
           $zipPath = "$env:GITHUB_WORKSPACE\${modName}.zip"
 
-          New-Item -ItemType Directory -Path $outDir -Force
-          Copy-Item -Path 'AlonsMOTD.dll','manifest.json','README.md','LICENSE.txt' -Destination $outDir -Force
-          Compress-Archive -Path "$outDir\*" -DestinationPath $zipPath -Force
+          # ensure output folder exists
+          New-Item -ItemType Directory -Path $binDir -Force
 
-      # 10) Upload your DLL & ZIP as GitHub Release assets
+          # copy the built DLL and support files
+          Copy-Item -Path `
+            "$env:GITHUB_WORKSPACE\bin\Release\net7.0\AlonsMOTD.dll", `
+            "$env:GITHUB_WORKSPACE\manifest.json", `
+            "$env:GITHUB_WORKSPACE\config.json", `
+            "$env:GITHUB_WORKSPACE\README.md", `
+            "$env:GITHUB_WORKSPACE\LICENSE.txt" `
+            -Destination $binDir -Force
+
+          Compress-Archive -Path "$binDir\*" -DestinationPath $zipPath -Force
+        shell: pwsh
+
+      # 5) Upload DLL and ZIP as release assets
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
         with:
