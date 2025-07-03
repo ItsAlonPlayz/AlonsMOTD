@@ -2,36 +2,37 @@ name: Build and Release Mod
 
 on:
   push:
+    # fires on any pushed tag like "v1.3.4"
     tags:
       - 'v*'
 
+permissions:
+  contents: write   # so we can create/update releases
+
 jobs:
-  build:
-    permissions:
-      contents: read
-      packages: write
-      
+  release:
     runs-on: windows-latest
+
     steps:
-      # 1) Checkout repo
-      - name: Checkout code
+      # 1) Checkout the code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      # 2) Setup .NET 7
+      # 2) Set up .NET 7
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '7.0.x'
 
-      # 3) Restore and build
-      - name: Restore & build
+      # 3) Restore & build your mod (references DLLs in lib/)
+      - name: Restore & Build
+        shell: pwsh
         run: |
           dotnet clean
           dotnet restore
           dotnet build --configuration Release
-        shell: pwsh
 
-      # 4) Package mod DLL, manifest, config, docs into a zip
+      # 4) Package the mod ZIP (DLL is already in bin\Release\net7.0)
       - name: Package mod ZIP
         shell: pwsh
         run: |
@@ -39,24 +40,29 @@ jobs:
           $binDir  = "$env:GITHUB_WORKSPACE\bin\Release\net7.0"
           $zipPath = "$env:GITHUB_WORKSPACE\${modName}.zip"
 
-          # ensure output folder exists
+          # ensure output directory exists
           New-Item -ItemType Directory -Path $binDir -Force
 
-          # copy only the support files (DLL is already in $binDir)
-          Copy-Item -Path `
+          # copy support files (DLL is already there)
+          Copy-Item `
             "$env:GITHUB_WORKSPACE\manifest.json", `
             "$env:GITHUB_WORKSPACE\config.json", `
             "$env:GITHUB_WORKSPACE\README.md", `
             "$env:GITHUB_WORKSPACE\LICENSE.txt" `
             -Destination $binDir -Force
 
-          # now zip everything in the bin folder (including the built DLL)
+          # zip everything in the release folder
           Compress-Archive -Path "$binDir\*" -DestinationPath $zipPath -Force
 
-      # 5) Upload DLL and ZIP as release assets
-      - name: Upload Release Assets
+      # 5) Create or update the GitHub Release, then upload assets
+      - name: Create/Update GitHub Release
+        id: gh_release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.ref_name }}      # e.g. "v1.3.4"
+          name: ${{ github.ref_name }}          # release title
+          draft: false                          # publish immediately
+          prerelease: false
           files: |
             bin/Release/net7.0/AlonsMOTD.dll
             AlonsMOTD.zip
