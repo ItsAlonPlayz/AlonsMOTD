@@ -1,0 +1,50 @@
+name: Build and Release Mod
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '7.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release
+
+      - name: Package mod ZIP
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $modName = 'AlonsMOTD'
+          $outputDir = "${{github.workspace}}/bin/Release/net7.0"
+          $zipPath = "${{github.workspace}}/${modName}.zip"
+          $files = @(
+            'AlonsMOTD.dll',
+            'manifest.json',
+            'README.md'
+          )
+          foreach ($file in $files) {
+            Copy-Item -Path $file -Destination $outputDir -Force
+          }
+          Compress-Archive -Path ($files | ForEach-Object { Join-Path $outputDir $_ }) -DestinationPath $zipPath -Force
+        shell: pwsh
+
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            bin/Release/net7.0/AlonsMOTD.dll
+            AlonsMOTD.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
