@@ -49,7 +49,7 @@ Config Example:
 ```
 Misc:
 ```
-**Note**: You can also change this in the Generic Mod Config Menu by spacechase0. (GMCM)
+Psssssttt.... -> You can also change this in the Generic Mod Config Menu by spacechase0. (GMCM) ;)
 ```
 Happy playing!
 
