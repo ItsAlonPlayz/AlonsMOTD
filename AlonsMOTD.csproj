@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <AssemblyName>AlonsMOTD</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="StardewValley">
+      <HintPath>E:\SteamLibrary\steamapps\common\Stardew Valley\Stardew Valley.dll</HintPath>
+    </Reference>
+
+    <Reference Include="StardewModdingAPI">
+      <HintPath>E:\SteamLibrary\steamapps\common\Stardew Valley\StardewModdingAPI.dll</HintPath>
+    </Reference>
+
+    <Reference Include="SMAPI.Toolkit.CoreInterfaces">
+      <HintPath>E:\SteamLibrary\steamapps\common\Stardew Valley\smapi-internal\SMAPI.Toolkit.CoreInterfaces.dll</HintPath>
+    </Reference>
+
+    <Reference Include="MonoGame.Framework">
+      <HintPath>E:\SteamLibrary\steamapps\common\Stardew Valley\MonoGame.Framework.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

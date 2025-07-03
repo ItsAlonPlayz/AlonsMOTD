@@ -1,0 +1,12 @@
+{
+  "Name": "Alon's MOTD",
+  "Author": "ItsAlonPlayz",
+  "Version": "1.1.0",
+  "UniqueID": "ItsAlonPlayz.AlonsMOTD",
+  "EntryDll": "AlonsMOTD.dll",
+  "Description": "A customizable MOTD (message of the day) mod!",
+  "MinimumApiVersion": "3.0.0",
+  "Dependencies": [
+    { "UniqueID": "spacechase0.GenericModConfigMenu", "IsRequired": false }
+  ]
+}

@@ -1,0 +1,8 @@
+# VS and build
+bin/
+obj/
+*.user
+*.suo
+
+# macOS
+.DS_Store
