@@ -1,20 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- target / assembly setup -->
     <TargetFramework>net7.0</TargetFramework>
     <AssemblyName>AlonsMOTD</AssemblyName>
 
-    <!-- auto-zip release for you -->
+    <!-- Automatically zip your release build -->
     <EnableModZip>true</EnableModZip>
     <ModFolderName>AlonsMOTD</ModFolderName>
+  </PropertyGroup>
 
-    <!-- specify where the game lives on the GitHub-Actions Windows runner -->
+  <!-- On CI (GitHub Actions), point to the runner’s Steam install -->
+  <PropertyGroup Condition="'$(CI)' == 'true'">
+    <GamePath>C:\Program Files\Steam\steamapps\common\Stardew Valley</GamePath>
+  </PropertyGroup>
+
+  <!-- Locally (your PC), point to your E: drive -->
+  <PropertyGroup Condition="'$(CI)' != 'true'">
     <GamePath>E:\SteamLibrary\steamapps\common\Stardew Valley</GamePath>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- pull in SMAPI & game assemblies automatically -->
+    <!-- This pulls in all SMAPI/Stardew/MonoGame references for you -->
     <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.4.0" />
   </ItemGroup>
 
