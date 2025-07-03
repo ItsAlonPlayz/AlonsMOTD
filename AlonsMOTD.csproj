@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- Target the SMAPI-supported runtime -->
     <TargetFramework>net7.0</TargetFramework>
     <AssemblyName>AlonsMOTD</AssemblyName>
 
@@ -9,12 +8,12 @@
     <EnableModZip>true</EnableModZip>
     <ModFolderName>AlonsMOTD</ModFolderName>
 
-    <!-- Hard-code the game path so CI and local both work -->
+    <!-- ALWAYS point at the GitHub runner’s game folder -->
     <GamePath>C:\Program Files\Steam\steamapps\common\Stardew Valley</GamePath>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Pull in SMAPI, game assemblies, and MonoGame for you -->
+    <!-- This pulls in SMAPI, Stardew Valley, MonoGame, etc., for you -->
     <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.4.0" />
   </ItemGroup>
 
