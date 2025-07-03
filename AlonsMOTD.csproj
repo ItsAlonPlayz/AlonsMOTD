@@ -1,26 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <!-- Target SMAPI’s supported runtime -->
     <TargetFramework>net7.0</TargetFramework>
+    <!-- Your mod’s assembly name -->
     <AssemblyName>AlonsMOTD</AssemblyName>
+    <!-- Automatically produce a ZIP for releases -->
+    <EnableModZip>true</EnableModZip>
+    <!-- Name the output folder/ZIP -->
+    <ModFolderName>AlonsMOTD</ModFolderName>
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="StardewValley">
-      <HintPath>E:\SteamLibrary\steamapps\common\Stardew Valley\Stardew Valley.dll</HintPath>
-    </Reference>
-
-    <Reference Include="StardewModdingAPI">
-      <HintPath>E:\SteamLibrary\steamapps\common\Stardew Valley\StardewModdingAPI.dll</HintPath>
-    </Reference>
-
-    <Reference Include="SMAPI.Toolkit.CoreInterfaces">
-      <HintPath>E:\SteamLibrary\steamapps\common\Stardew Valley\smapi-internal\SMAPI.Toolkit.CoreInterfaces.dll</HintPath>
-    </Reference>
-
-    <Reference Include="MonoGame.Framework">
-      <HintPath>E:\SteamLibrary\steamapps\common\Stardew Valley\MonoGame.Framework.dll</HintPath>
-    </Reference>
+    <!-- Pull in the SMAPI, Stardew Valley and MonoGame references for you -->
+    <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.4.0" />
   </ItemGroup>
 
 </Project>
