@@ -22,13 +22,13 @@ jobs:
 
       - name: Download SMAPI
         run: |
-          Invoke-WebRequest -Uri "https://github.com/Pathoschild/SMAPI/releases/download/4.2.1/SMAPI-4.2.1-installer-for-developers.zip" -OutFile "smapi.zip"
+          Invoke-WebRequest -Uri "https://github.com/Pathoschild/SMAPI/releases/download/4.2.1/SMAPI-4.2.1.zip" -OutFile "smapi.zip"
           Expand-Archive smapi.zip -DestinationPath smapi
           New-Item -ItemType Directory -Path smapi-libs -Force
-          Copy-Item -Path "smapi/lib/net7.0/SMAPI.dll" -Destination "smapi-libs/SMAPI.dll" -Force
-          Copy-Item -Path "smapi/lib/net7.0/Stardew Valley.dll" -Destination "smapi-libs/Stardew Valley.dll" -Force
-          Copy-Item -Path "smapi/lib/net7.0/MonoGame.Framework.dll" -Destination "smapi-libs/MonoGame.Framework.dll" -Force
-          Copy-Item -Path "smapi/lib/net7.0/SMAPI.Toolkit.CoreInterfaces.dll" -Destination "smapi-libs/SMAPI.Toolkit.CoreInterfaces.dll" -Force
+          Copy-Item -Path "smapi/SMAPI 4.2.1/net7.0/SMAPI.dll" -Destination "smapi-libs/SMAPI.dll" -Force
+          Copy-Item -Path "smapi/SMAPI 4.2.1/net7.0/Stardew Valley.dll" -Destination "smapi-libs/Stardew Valley.dll" -Force
+          Copy-Item -Path "smapi/SMAPI 4.2.1/net7.0/MonoGame.Framework.dll" -Destination "smapi-libs/MonoGame.Framework.dll" -Force
+          Copy-Item -Path "smapi/SMAPI 4.2.1/net7.0/SMAPI.Toolkit.CoreInterfaces.dll" -Destination "smapi-libs/SMAPI.Toolkit.CoreInterfaces.dll" -Force
         shell: pwsh
 
       - name: Build
