@@ -22,7 +22,7 @@ jobs:
 
       - name: Download SMAPI
         run: |
-          Invoke-WebRequest -Uri "https://github.com/Pathoschild/SMAPI/releases/download/4.2.1/SMAPI-4.2.1.zip" -OutFile "smapi.zip"
+          Invoke-WebRequest -Uri "https://github.com/Pathoschild/SMAPI/releases/download/4.2.1/SMAPI-4.2.1-installer.zip" -OutFile "smapi.zip"
           Expand-Archive smapi.zip -DestinationPath smapi
           New-Item -ItemType Directory -Path smapi-libs -Force
           Copy-Item -Path "smapi/SMAPI 4.2.1/net7.0/SMAPI.dll" -Destination "smapi-libs/SMAPI.dll" -Force
