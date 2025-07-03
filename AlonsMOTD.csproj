@@ -5,14 +5,17 @@
     <TargetFramework>net7.0</TargetFramework>
     <!-- Your mod’s assembly name -->
     <AssemblyName>AlonsMOTD</AssemblyName>
-    <!-- Automatically produce a ZIP for releases -->
+
+    <!-- Auto-zip your release -->
     <EnableModZip>true</EnableModZip>
-    <!-- Name the output folder/ZIP -->
     <ModFolderName>AlonsMOTD</ModFolderName>
+
+    <!-- Point ModBuildConfig to the game folder on Windows runners -->
+    <CustomGamePath>$(ProgramFiles)\Steam\steamapps\common\Stardew Valley</CustomGamePath>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Pull in the SMAPI, Stardew Valley and MonoGame references for you -->
+    <!-- Pull in SMAPI/Stardew/MonoGame references and zip support -->
     <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.4.0" />
   </ItemGroup>
 
