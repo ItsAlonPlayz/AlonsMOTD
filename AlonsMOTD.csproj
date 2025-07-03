@@ -1,4 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <AssemblyName>AlonsMOTD</AssemblyName>
@@ -9,4 +10,5 @@
   <ItemGroup>
     <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.4.0" />
   </ItemGroup>
+
 </Project>

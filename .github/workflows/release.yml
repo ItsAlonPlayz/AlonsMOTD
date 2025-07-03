@@ -31,8 +31,10 @@ jobs:
         run: |
           dotnet clean
           dotnet build --configuration Release `
-            --property:GamePath="C:\Program Files\Steam\steamapps\common\Stardew Valley"
+            --property:GamePath="C:\Program Files\Steam\steamapps\common\Stardew Valley" `
+            --no-restore
         shell: pwsh
+
 
       - name: Package mod ZIP
         run: |
