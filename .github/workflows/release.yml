@@ -10,11 +10,11 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # 1) Get your code
+      # 1) Checkout your code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2) Install .NET 7 SDK
+      # 2) Setup .NET SDK
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -24,25 +24,23 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      # 4) Install SteamCMD on runner
+      # 4) Install SteamCMD
       - name: Install SteamCMD
         uses: Lordfirespeed/setup-steamcmd@v2
 
-      # 5) Download Stardew via SteamCMD (Option A: single-line)
+      # 5) Install Stardew Valley via SteamCMD
       - name: Install Stardew Valley via SteamCMD
         shell: pwsh
-        run: steamcmd +login anonymous +force_install_dir "${{ runner.temp }}\Stardew" +app_update 413150 validate +quit
+        run: steamcmd +force_install_dir "${{ runner.temp }}\Stardew" +login anonymous +app_update 413150 validate +quit
 
-      # 6) Download and unpack SMAPI installer
+      # 6) Download and unpack the SMAPI installer
       - name: Download SMAPI installer
         shell: pwsh
         run: |
-          Invoke-WebRequest `
-            -Uri "https://github.com/Pathoschild/SMAPI/releases/download/4.2.1/SMAPI-4.2.1-installer.zip" `
-            -OutFile "smapi.zip"
+          Invoke-WebRequest -Uri "https://github.com/Pathoschild/SMAPI/releases/download/4.2.1/SMAPI-4.2.1-installer.zip" -OutFile "smapi.zip"
           Expand-Archive smapi.zip -DestinationPath smapi
 
-      # 7) Install SMAPI silently into the same game folder
+      # 7) Install SMAPI into the same game folder
       - name: Install SMAPI into game folder
         shell: pwsh
         run: |
@@ -53,11 +51,9 @@ jobs:
         shell: pwsh
         run: |
           dotnet clean
-          dotnet build `
-            --configuration Release `
-            -p:GamePath="${{ runner.temp }}\Stardew"
+          dotnet build --configuration Release -p:GamePath="${{ runner.temp }}\Stardew"
 
-      # 9) Copy manifest, DLL & docs into bin dir and zip
+      # 9) Package your DLL, manifest & docs into a zip
       - name: Package mod ZIP
         shell: pwsh
         run: |
@@ -69,7 +65,7 @@ jobs:
           Copy-Item -Path 'AlonsMOTD.dll','manifest.json','README.md','LICENSE.txt' -Destination $outDir -Force
           Compress-Archive -Path "$outDir\*" -DestinationPath $zipPath -Force
 
-      # 10) Attach the DLL & ZIP to your GitHub Release
+      # 10) Upload your DLL & ZIP as GitHub Release assets
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
         with:
