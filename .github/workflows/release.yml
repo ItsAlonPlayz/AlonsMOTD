@@ -29,6 +29,7 @@ jobs:
 
       # 4) Package mod DLL, manifest, config, docs into a zip
       - name: Package mod ZIP
+        shell: pwsh
         run: |
           $modName = 'AlonsMOTD'
           $binDir  = "$env:GITHUB_WORKSPACE\bin\Release\net7.0"
@@ -37,17 +38,16 @@ jobs:
           # ensure output folder exists
           New-Item -ItemType Directory -Path $binDir -Force
 
-          # copy the built DLL and support files
+          # copy only the support files (DLL is already in $binDir)
           Copy-Item -Path `
-            "$env:GITHUB_WORKSPACE\bin\Release\net7.0\AlonsMOTD.dll", `
             "$env:GITHUB_WORKSPACE\manifest.json", `
             "$env:GITHUB_WORKSPACE\config.json", `
             "$env:GITHUB_WORKSPACE\README.md", `
             "$env:GITHUB_WORKSPACE\LICENSE.txt" `
             -Destination $binDir -Force
 
+          # now zip everything in the bin folder (including the built DLL)
           Compress-Archive -Path "$binDir\*" -DestinationPath $zipPath -Force
-        shell: pwsh
 
       # 5) Upload DLL and ZIP as release assets
       - name: Upload Release Assets
