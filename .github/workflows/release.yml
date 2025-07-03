@@ -9,49 +9,70 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
+      # 1) Checkout your code
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2) Install .NET
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '7.0.x'
+          
+      # 3) Install SteamCMD on the runner
+      - name: Install SteamCMD
+        uses: Lordfirespeed/setup-steamcmd@v2
 
-      - name: Restore dependencies
-        run: dotnet restore
-
-      - name: Download SMAPI
+      # 4) Use SteamCMD to install Stardew Valley
+      - name: Install Stardew Valley via SteamCMD
         run: |
-          Invoke-WebRequest -Uri "https://github.com/Pathoschild/SMAPI/releases/download/4.2.1/SMAPI-4.2.1-installer.zip" -OutFile "smapi.zip"
-          Expand-Archive smapi.zip -DestinationPath smapi
-          New-Item -ItemType Directory -Path smapi-libs -Force
-        shell: pwsh
+          # steamcmd must be on PATH from the previous step
+          steamcmd +login anonymous \
+                   +force_install_dir "${{ runner.temp }}\Stardew" \
+                   +app_update 413150 validate \
+                   +quit
 
+      # 5) Download and unpack the SMAPI installer
+      - name: Download SMAPI installer
+        run: |
+          Invoke-WebRequest `
+            -Uri "https://github.com/Pathoschild/SMAPI/releases/download/4.2.1/SMAPI-4.2.1-installer.zip" `
+            -OutFile "smapi.zip"
+          Expand-Archive smapi.zip -DestinationPath smapi
+          
+      # 6) Run SMAPI’s Windows installer silently into the same folder
+      - name: Install SMAPI into game folder
+        shell: pwsh
+        run: |
+          # NSIS silent flag is /S, and /D= must be the last argument
+          & .\smapi\SMAPI-4.2.1-installer.exe /S /D="${{ runner.temp }}\Stardew"
+
+      # 7) Restore & build, pointing ModBuildConfig at our freshly-installed game
       - name: Build & zip
         shell: pwsh
         run: |
           dotnet clean
-          dotnet build `
-            --configuration Release `
-            -p:GamePath="C:\Program Files\Steam\steamapps\common\Stardew Valley"
+          dotnet restore
+          dotnet build --configuration Release `
+            -p:GamePath="${{ runner.temp }}\Stardew"
 
-
+      # 8) Copy your manifest, DLL, README, LICENSE and zip them
       - name: Package mod ZIP
-        run: |
-          $ErrorActionPreference = 'Stop'
-          $modName   = 'AlonsMOTD'
-          $outputDir = "${{github.workspace}}\bin\Release\net7.0"
-          $zipPath   = "${{github.workspace}}\${modName}.zip"
-
-          # Copy only the files we need into the output folder
-          Copy-Item -Path 'AlonsMOTD.dll','manifest.json','README.md','LICENSE.txt' -Destination $outputDir -Force
-
-          # (Optional) include assets screenshots
-          # Copy-Item -Path 'assets\*' -Destination "$outputDir\assets" -Recurse -Force
-
-          Compress-Archive -Path "$outputDir\*" -DestinationPath $zipPath -Force
         shell: pwsh
+        run: |
+          $modName   = 'AlonsMOTD'
+          $outDir    = "$env:GITHUB_WORKSPACE\bin\Release\net7.0"
+          $zipPath   = "$env:GITHUB_WORKSPACE\${modName}.zip"
+          
+          # Make sure the output dir exists and copy in only what you ship
+          New-Item -ItemType Directory -Path $outDir -Force
+          Copy-Item -Path `
+            'AlonsMOTD.dll','manifest.json','README.md','LICENSE.txt' `
+            -Destination $outDir -Force
+          
+          Compress-Archive -Path "$outDir\*" -DestinationPath $zipPath -Force
 
+      # 9) Publish your DLL + ZIP as GitHub Release assets
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v2
         with:
