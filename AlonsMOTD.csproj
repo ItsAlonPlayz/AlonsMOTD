@@ -7,8 +7,20 @@
     <ModFolderName>AlonsMOTD</ModFolderName>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.4.0" />
-  </ItemGroup>
+<ItemGroup>
+  <Reference Include="StardewValley">
+    <HintPath>lib\Stardew Valley.dll</HintPath>
+  </Reference>
+  <Reference Include="StardewModdingAPI">
+    <HintPath>lib\StardewModdingAPI.dll</HintPath>
+  </Reference>
+  <Reference Include="SMAPI.Toolkit.CoreInterfaces">
+    <HintPath>lib\SMAPI.Toolkit.CoreInterfaces.dll</HintPath>
+  </Reference>
+  <Reference Include="MonoGame.Framework">
+    <HintPath>lib\MonoGame.Framework.dll</HintPath>
+  </Reference>
+</ItemGroup>
+
 
 </Project>
